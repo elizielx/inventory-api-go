@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/elizielx/inventory-api-go/config"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -11,6 +12,11 @@ var (
 )
 
 func main() {
+	configuration, err := config.LoadConfiguration(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	server = gin.Default()
 	router := server.Group("/api")
 
@@ -21,6 +27,5 @@ func main() {
 		})
 	})
 
-	log.Fatal(server.Run(":8080"))
-
+	log.Fatal(server.Run(":" + configuration.ServerPort))
 }
