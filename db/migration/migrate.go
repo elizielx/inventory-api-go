@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/elizielx/inventory-api-go/config"
-	"github.com/elizielx/inventory-api-go/database"
+	"github.com/elizielx/inventory-api-go/db"
 	"github.com/elizielx/inventory-api-go/models"
 	"log"
 )
@@ -13,13 +13,14 @@ func init() {
 		log.Fatal(err)
 	}
 
-	database.Connect(configuration)
+	db.InitDatabase(configuration)
 }
 
 func main() {
-	err := database.DB.AutoMigrate(&models.User{})
+	err := db.GetDatabase().AutoMigrate(&models.User{})
 	if err != nil {
 		return
 	}
+
 	log.Println("Migration completed")
 }

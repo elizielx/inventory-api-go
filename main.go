@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/elizielx/inventory-api-go/config"
-	"github.com/elizielx/inventory-api-go/database"
+	"github.com/elizielx/inventory-api-go/db"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -18,7 +18,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	database.Connect(configuration)
+	db.InitDatabase(configuration)
 	server = gin.Default()
 }
 
@@ -29,7 +29,6 @@ func main() {
 	}
 
 	router := server.Group("/api")
-
 	router.GET("/health", func(ctx *gin.Context) {
 		message := "OK"
 		ctx.JSON(http.StatusOK, gin.H{
