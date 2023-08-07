@@ -2,14 +2,18 @@ package main
 
 import (
 	"github.com/elizielx/inventory-api-go/config"
+	"github.com/elizielx/inventory-api-go/controllers"
 	"github.com/elizielx/inventory-api-go/db"
+	"github.com/elizielx/inventory-api-go/routes"
 	"github.com/gin-gonic/gin"
 	"log"
-	"net/http"
 )
 
 var (
 	server *gin.Engine
+
+	UserController      *controllers.UserController
+	UserRouteController routes.UserRouteController
 )
 
 func init() {
@@ -19,6 +23,10 @@ func init() {
 	}
 
 	db.InitDatabase(configuration)
+
+	UserController = controllers.NewUserController(db.GetDatabase())
+	UserRouteController = routes.NewRouteUserController(UserController)
+
 	server = gin.Default()
 }
 
@@ -29,12 +37,7 @@ func main() {
 	}
 
 	router := server.Group("/api")
-	router.GET("/health", func(ctx *gin.Context) {
-		message := "OK"
-		ctx.JSON(http.StatusOK, gin.H{
-			"message": message,
-		})
-	})
+	UserRouteController.UserRoute(router)
 
 	log.Fatal(server.Run(":" + configuration.ServerPort))
 }
